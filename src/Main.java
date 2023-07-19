@@ -44,11 +44,10 @@ public class Main {
         addToTree(tree, files);
 
         while (true) {
+            System.out.print("Search for: ");
+            s = scanner.nextLine().trim();
             if (s.equals("!q")) return;
 
-            System.out.print("Search for: ");
-
-            s = scanner.nextLine().trim();
             List<String> res = tree.search(s, 10, 20);
             for (String str: res) {
                 System.out.println(str);

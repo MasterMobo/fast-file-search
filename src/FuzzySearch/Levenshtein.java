@@ -1,7 +1,7 @@
 package FuzzySearch;
 
 public class Levenshtein {
-    /* Levenshtein distance (or edit-distance) is the number of operations needed to get from one string to the other.
+    /* FuzzySearch.Levenshtein distance (or edit-distance) is the number of operations needed to get from one string to the other.
      * For this implementation we consider three types of operation:
      * - Add: cot -> cots
      * - Subtract: cost -> cot

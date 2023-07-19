@@ -1,6 +1,7 @@
 import FuzzySearch.BKTree;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,33 +11,44 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class Main {
-    public static void main(String[] args) {
+    // TODO: Its still throwing AccessDenied Errors
+    public static List<Path> getFiles(String path) throws IOException {
+        try (Stream<Path> stream = Files.walk(Paths.get(path))){
+            return stream.toList();
+        }catch (AccessDeniedException e) {
+                System.out.println("Access to directory denied");
+                return null;
+            }
+        catch (IOException e) {
+                System.out.println("Invalid Directory");
+                return null;
+            }
+        }
+
+
+    public static void main(String[] args) throws IOException {
         BKTree tree = new BKTree();
 
 
         System.out.print("Enter directory to search: ");
         Scanner scanner = new Scanner(System.in);
-        String s = scanner.nextLine();
+        String s = scanner.nextLine().trim();
+        List<Path> files = getFiles(s);
 
-        System.out.println("Processing files...");
-        try (Stream<Path> stream = Files.walk(Paths.get(s))) {
-            List<Path> res = stream.toList();
-
-            for (Path file: res) {
-                String fileName = stripExtension(file.getFileName().toString());
-
-                if (Files.isRegularFile(file) && !Files.isHidden(file)) {
-                    tree.insert(stripExtension(fileName), file.toString());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (files == null) {
+            System.out.print("Please enter a different directory: ");
+            s = scanner.nextLine().trim();
+            files = getFiles(s);
         }
 
-        while (!Objects.equals(s, "0")) {
+        addToTree(tree, files);
+
+        while (true) {
+            if (s.equals("!q")) return;
+
             System.out.print("Search for: ");
 
-            s = scanner.nextLine();
+            s = scanner.nextLine().trim();
             List<String> res = tree.search(s, 10, 20);
             for (String str: res) {
                 System.out.println(str);
@@ -57,5 +69,15 @@ public class Main {
 
         // Otherwise return the string, up to the dot.
         return str.substring(0, pos);
+    }
+
+    public static void addToTree(BKTree tree, List<Path> files) throws IOException {
+        for (Path file : files) {
+            String fileName = stripExtension(file.getFileName().toString());
+
+            if (Files.isRegularFile(file) && !Files.isHidden(file)) {
+                tree.insert(stripExtension(fileName), file.toString());
+            }
+        }
     }
 }

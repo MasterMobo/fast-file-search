@@ -1,7 +1,7 @@
 package FuzzySearch;
 
 public class Levenshtein {
-    /* FuzzySearch.Levenshtein distance (or edit-distance) is the number of operations needed to get from one string to the other.
+    /* Levenshtein distance (or edit-distance) is the number of operations needed to get from one string to the other.
      * For this implementation we consider three types of operation:
      * - Add: cot -> cots
      * - Subtract: cost -> cot
@@ -63,6 +63,7 @@ public class Levenshtein {
         int m = b.length();
         int[] prev = new int[m + 1];
         int[] current = new int[m + 1];
+        int[] dummy = prev;     // variable for swapping prev and current
 
         for (int i = 0; i <= m; i++) {
             prev[i] = i;
@@ -79,7 +80,9 @@ public class Levenshtein {
                 current[j] = min(add, diff, sub);
             }
 
-            prev = current.clone();
+            prev = current;
+            current = dummy;
+            dummy = prev;
         }
 
         return prev[m];

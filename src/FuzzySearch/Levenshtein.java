@@ -57,7 +57,7 @@ public class Levenshtein {
     public static int dist(String a, String b){
         // Dynamic Programming approach with 2 arrays. Better space optimization.
         // Time Complexity: O(m*n)
-        // Space Complexity: O(m*n)
+        // Space Complexity: O(m)
 
         int n = a.length();
         int m = b.length();
